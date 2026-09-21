@@ -42,6 +42,10 @@ class Device {
 				bool unprotect_flash) = 0;
 
 		virtual bool read_register(const std::string /*reg_name*/) { return false;}
+		/* shift a USERn data register: "<chain>:<nbits>:<hex>", prints what came out */
+		virtual bool user_dr(const std::string /*spec*/) { return false;}
+		/* read the configuration memory back into a file, optionally after a GCAPTURE */
+		virtual bool readback(const std::string /*file*/, uint32_t /*nwords*/, bool /*capture*/) { return false;}
 
 		/**********************/
 		/*    flash access    */

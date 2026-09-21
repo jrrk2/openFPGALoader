@@ -128,6 +128,10 @@ struct arguments {
 	bool read_xadc;
 	std::string read_register;
 	std::string user_flash;
+	std::vector<std::string> user_dr;
+	std::string readback_file;
+	uint32_t readback_words;
+	bool capture;
 };
 
 int run_xvc_server(const struct arguments &args, const cable_t &cable,
@@ -168,7 +172,8 @@ int main(int argc, char **argv)
 			false, 3721, "-",
 			"", false, {},  // mcufw conmcu, user_misc_dev_list
 			false, false, "", // read_dna, read_xadc, read_register
-			"" // user_flash
+			"", // user_flash
+			{}, "", 0, false // user_dr, readback_file, readback_words, capture
 	};
 	/* parse arguments */
 	int ret = parse_opt(argc, argv, &args, &pins_config);
@@ -606,6 +611,10 @@ int main(int argc, char **argv)
 	if (!args.read_register.empty()) {
 		fpga->read_register(args.read_register);
 	}
+	for (const auto &spec : args.user_dr)
+		fpga->user_dr(spec);
+	if (!args.readback_file.empty())
+		fpga->readback(args.readback_file, args.readback_words, args.capture);
 
 	/* unprotect SPI flash */
 	if (args.unprotect_flash && args.bit_file.empty()) {
@@ -1029,6 +1038,14 @@ int parse_opt(int argc, char **argv, struct arguments *args,
 				cxxopts::value<bool>(args->read_xadc))
 			("read-register", "Read Status Register(Xilinx FPGA only)",
 				cxxopts::value<std::string>(args->read_register))
+			("user-dr", "Shift a USER data register: <chain>/<nbits>/<hex> (Xilinx FPGA only, repeatable)",
+				cxxopts::value<std::vector<std::string>>(args->user_dr))
+			("readback", "Read the configuration memory back to this file (Xilinx FPGA only)",
+				cxxopts::value<std::string>(args->readback_file))
+			("readback-words", "Words to read back (the bitstream's FDRI word count plus one frame)",
+				cxxopts::value<uint32_t>(args->readback_words))
+			("capture", "GCAPTURE before --readback: the live flip-flop and RAM state",
+				cxxopts::value<bool>(args->capture))
 			("user-flash", "User flash file (Gowin LittleBee FPGA only)",
 				cxxopts::value<std::string>(args->user_flash))
 			("V,version", "Print program version")
@@ -1238,6 +1255,8 @@ int parse_opt(int argc, char **argv, struct arguments *args,
 			!args->conmcu &&
 			!args->read_dna &&
 			!args->read_xadc &&
+			args->user_dr.empty() &&
+			args->readback_file.empty() &&
 			args->read_register.empty()) {
 			printError("Error: bitfile not specified");
 			std::cout << options.help() << std::endl;

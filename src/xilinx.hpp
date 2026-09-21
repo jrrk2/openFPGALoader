@@ -44,6 +44,8 @@ class Xilinx: public Device, FlashInterface {
 			displayRegister(reg_name, dumpRegister(reg_name));
 			return true;
 		}
+		bool user_dr(const std::string spec) override;
+		bool readback(const std::string file, uint32_t nwords, bool capture) override;
 		/*!
 		 * \brief display register content (bits/slices)
 		 * \in reg_name: register name

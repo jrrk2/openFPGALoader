@@ -1192,6 +1192,122 @@ uint32_t Xilinx::dumpRegister(std::string reg_name)
 	return reg_word;
 }
 
+/* --user-dr <chain>/<nbits>/<hex>
+ * Select USER<chain> (1-4) and shift nbits through its data register, LSB
+ * first, from the hex value; the bits that come out are printed as hex,
+ * LSB first too.  A design with a BSCANE2 on that chain sees CAPTURE,
+ * SHIFT and UPDATE exactly as the TAP produces them: what it loads on
+ * CAPTURE is what comes out, what was shifted in is what UPDATE hands it.
+ */
+bool Xilinx::user_dr(const std::string spec)
+{
+	unsigned chain = 0, nbits = 0;
+	std::string hex;
+	size_t p1 = spec.find('/'), p2 = (p1 == std::string::npos) ? p1 : spec.find('/', p1 + 1);
+	if (p1 != std::string::npos && p2 != std::string::npos) {
+		chain = atoi(spec.substr(0, p1).c_str());
+		nbits = atoi(spec.substr(p1 + 1, p2 - p1 - 1).c_str());
+		hex = spec.substr(p2 + 1);
+	}
+	if (chain < 1 || chain > 4 || nbits == 0 || hex.empty()) {
+		printError("--user-dr wants <chain 1-4>/<nbits>/<hex>, got '" + spec + "'");
+		return false;
+	}
+	const char *names[] = {"USER1", "USER2", "USER3", "USER4"};
+	const unsigned nbytes = (nbits + 7) / 8;
+	std::vector<uint8_t> tx(nbytes, 0), rx(nbytes, 0);
+	/* hex is written most-significant digit first; bit 0 of the value is the first bit out */
+	for (size_t i = 0; i < hex.size(); i++) {
+		char h = hex[hex.size() - 1 - i];
+		unsigned v = (h >= '0' && h <= '9') ? h - '0' : (h >= 'a' && h <= 'f') ? h - 'a' + 10 : (h >= 'A' && h <= 'F') ? h - 'A' + 10 : 16;
+		if (v > 15) { printError("--user-dr: bad hex digit"); return false; }
+		if (i / 2 < nbytes) tx[i / 2] |= v << (4 * (i % 2));
+	}
+	_jtag->go_test_logic_reset();
+	_jtag->set_state(Jtag::RUN_TEST_IDLE);
+	_jtag->shiftIR(get_ircode(_ircode_map, names[chain - 1]), NULL, _irlen);
+	_jtag->shiftDR(tx.data(), rx.data(), nbits);
+	_jtag->set_state(Jtag::RUN_TEST_IDLE);
+	std::stringstream out;
+	for (int i = nbytes - 1; i >= 0; i--)
+		out << std::hex << std::setw(2) << std::setfill('0') << (unsigned)rx[i];
+	printInfo("USER" + std::to_string(chain) + " out " + out.str());
+	return true;
+}
+
+/* --readback <file> [--readback-words N] [--capture]
+ * The configuration memory, read back through CFG_OUT as UG470's readback
+ * sequence describes: RCRC, FAR = 0, RCFG, then a type-1/type-2 read of
+ * FDRO for N words.  With --capture, a GCAPTURE command first, so the
+ * flip-flops' live values (and the block RAMs' contents) are what the
+ * frames hold.  The file is the raw word stream, 32-bit little-endian, the
+ * first frame being the dummy frame readback always begins with.
+ */
+bool Xilinx::readback(const std::string file, uint32_t nwords, bool capture)
+{
+	if (nwords == 0) {
+		printError("--readback needs --readback-words (the bitstream's FDRI word count plus one frame)");
+		return false;
+	}
+	std::vector<uint32_t> pkts = {
+		0xFFFFFFFF,  // dummy
+		0xAA995566,  // sync
+		0x20000000,  // noop
+		0x30008001, 0x00000007,  // CMD = RCRC
+		0x20000000, 0x20000000,
+	};
+	if (capture) {
+		pkts.push_back(0x30008001); pkts.push_back(0x0000000C);  // CMD = GCAPTURE
+		pkts.push_back(0x20000000); pkts.push_back(0x20000000);
+	}
+	std::vector<uint32_t> tail = {
+		0x30002001, 0x00000000,  // FAR = 0
+		0x30008001, 0x00000004,  // CMD = RCFG
+		0x20000000,
+		0x28006000,              // type 1 read FDRO, 0 words
+		0x48000000u | (nwords & 0x07FFFFFF),  // type 2, word count
+		0x20000000, 0x20000000,
+	};
+	pkts.insert(pkts.end(), tail.begin(), tail.end());
+
+	_jtag->go_test_logic_reset();
+	_jtag->set_state(Jtag::RUN_TEST_IDLE);
+	_jtag->shiftIR(get_ircode(_ircode_map, "CFG_IN"), NULL, _irlen, Jtag::SELECT_DR_SCAN);
+	for (size_t i = 0; i < pkts.size(); i++) {
+		Jtag::tapState_t next_state = (i + 1 == pkts.size()) ? Jtag::SELECT_IR_SCAN : Jtag::SHIFT_DR;
+		const uint32_t tmp = BitParser::reverse_32(pkts[i]);
+		const uint8_t cfg[] = {
+			static_cast<uint8_t>((tmp >>  0) & 0xff), static_cast<uint8_t>((tmp >>  8) & 0xff),
+			static_cast<uint8_t>((tmp >> 16) & 0xff), static_cast<uint8_t>((tmp >> 24) & 0xff)};
+		_jtag->shiftDR(cfg, NULL, 32, next_state);
+	}
+	_jtag->shiftIR(get_ircode(_ircode_map, "CFG_OUT"), NULL, _irlen, Jtag::SELECT_DR_SCAN);
+
+	FILE *fd = fopen(file.c_str(), "wb");
+	if (!fd) { printError("cannot write " + file); return false; }
+	const uint32_t chunk_words = 4096;
+	std::vector<uint8_t> zeros(chunk_words * 4, 0), buf(chunk_words * 4);
+	ProgressBar progress("readback", nwords, 50, false);
+	for (uint32_t done = 0; done < nwords; ) {
+		uint32_t n = std::min(chunk_words, nwords - done);
+		bool last = (done + n == nwords);
+		_jtag->shiftDR(zeros.data(), buf.data(), n * 32, last ? Jtag::RUN_TEST_IDLE : Jtag::SHIFT_DR);
+		/* each word arrives MSB first on TDO: undo the bit order per word */
+		for (uint32_t w = 0; w < n; w++) {
+			uint32_t v = buf[4 * w] | (buf[4 * w + 1] << 8) | (buf[4 * w + 2] << 16) | ((uint32_t)buf[4 * w + 3] << 24);
+			v = BitParser::reverse_32(v);
+			fwrite(&v, 4, 1, fd);
+		}
+		done += n;
+		progress.display(done);
+	}
+	progress.done();
+	fclose(fd);
+	_jtag->go_test_logic_reset();
+	printSuccess("readback: " + std::to_string(nwords) + " words to " + file);
+	return true;
+}
+
 void Xilinx::displayRegister(const std::string reg_name, const uint32_t reg_val) {
 	auto reg = reg_content.find(reg_name);
 	if (reg == reg_content.end()) {
