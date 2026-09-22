@@ -140,6 +140,8 @@ static std::map<std::string, std::map<std::string, std::vector<uint8_t>>>
 			{
 				{ "USER1",       {0x02} },
 				{ "USER2",       {0x03} },
+				{ "USER3",       {0x22} },
+				{ "USER4",       {0x23} },
 				{ "CFG_OUT",     {0x04} },
 				{ "CFG_IN",      {0x05} },
 				{ "USERCODE",    {0x08} },
