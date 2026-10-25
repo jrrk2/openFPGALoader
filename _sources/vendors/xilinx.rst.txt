@@ -36,6 +36,10 @@ To have access to this file you need to configure the tool:
   For alchitry board the bitstream must be configured with a buswidth of 1 or 2.
   Quad mode can't be used with alchitry's FLASH.
 
+.. WARNING::
+  For boards based on a Zynq (7000 or MPSoC), boot mode must be configured for JTAG (for Zedboard JP7->JP11 must be
+  to GND).
+
 Loading a bitstream
 ===================
 
@@ -60,7 +64,10 @@ SPI flash
 .. NOTE::
   ``.bit``, ``.bin``, and ``.mcs`` are supported for FLASH.
 
-``.mcs`` must be generated through vivado with a tcl script like:
+``.mcs`` must be generated through Vivado with a tcl script like:
+
+.. WARNING::
+  For boards based on Zynq device (7000 and MPSoC) SPI flash is not accessible through PL.
 
 .. code-block:: tcl
 
@@ -94,5 +101,24 @@ File load:
 .. NOTE::
   ``--fpga-part`` is only required if this information is not provided at ``board.hpp`` level or if the board is not
   officially supported.
-  device/packagee format is something like xc7a35tcsg324 (arty model).
+  device/package format is something like xc7a35tcsg324 (arty model).
   See :ghsrc:`src/board.hpp <src/board.hpp>`, or :ghsrc:`spiOverJtag <spiOverJtag>` directory for examples.
+
+Some boards with UltraScale FPGAs, like the VCU118 and KCU16, support the SPIx8 (Dual Quad SPI) configuration.
+In this case, the ``spix8`` option ``write_cfgmem`` on the above example can be used to generate two ``.mcs`` files,
+to fit bigger designs or for faster programming. Only ``.mcs`` files can be used to program the FPGA in this case.
+
+In this case, to load the two ``.mcs`` files:
+
+.. code-block:: bash
+
+    openFPGALoader --board vcu118 -f --target-flash both --bitstream *.runs/impl_1/*_primary.mcs --secondary-bitstream *.runs/impl_1/*_secondary.mcs
+
+On these boards, each SPI flash can be programmed independently with the ``--target-flash`` option.
+The default target is the ``primary`` flash.
+
+For example, to program only the secondary flash with arbitrary data not related to FPGA configuration:
+
+.. code-block:: bash
+
+    openFPGALoader --board vcu118 -f --target-flash secondary --bitstream arbitrary_data

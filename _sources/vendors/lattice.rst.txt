@@ -16,12 +16,17 @@ File load:
 
 .. code-block:: bash
 
-    openFPGALoader [-b yourboard] impl1/*.jed
+    openFPGALoader [-b yourboard] [--flash-sector CFG0] impl1/*.jed
 
 where ``yourboard`` may be:
 
 * ``machX02EVN``
+* ``machX03EVN``
 * ``machXO3SK``
+
+and where ``--flash-sector CFG0`` is needed for the MachXO3D Breakout Board.
+
+``.bit`` may also be used for *machXO2*
 
 SRAM
 ----
@@ -37,6 +42,7 @@ File load:
 where ``yourboard`` may be:
 
 * ``machX02EVN``
+* ``machX03EVN``
 * ``machXO3SK``
 
 iCE40
@@ -55,8 +61,8 @@ SI  (ADBUS1)  Pin 8
 SCK (ADBUS0)  Pin 9
 SO  (ADBUS2)  Pin 7
 CS  (ABDUS4)  Pin 10
-RST (ADBUS6   Pin 6
-DONE (ADBUS7) Pin 5
+RST (ADBUS7)  Pin 6
+DONE (ADBUS6) Pin 5
 ============= ===============
 
 Bin file load:
@@ -67,8 +73,8 @@ Bin file load:
 
 Since it's a direct access to the flash (SPI) the ``-b`` option is required.
 
-ECP5/Crosslink-NX
-=================
+ECP5/ECP3/Certus-NX/CertusPro-NX/Crosslink-NX
+=============================================
 
 SRAM
 ----
@@ -82,6 +88,10 @@ SRAM
 
 SPI Flash
 ---------
+
+.. note::
+
+   SPI Flash write is not supported for ECP3 family.
 
 BIT:
 

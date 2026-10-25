@@ -1,51 +1,173 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Troubleshooting &mdash; openFPGALoader: universal utility for programming FPGA latest documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Troubleshooting &#8212; openFPGALoader: universal utility for programming FPGA latest documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Advanced usage of openFPGALoader" href="advanced.html" />
-    <link rel="prev" title="Installing openFPGALoader" href="install.html" /> 
-</head>
+    <link rel="prev" title="Installing openFPGALoader" href="install.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> openFPGALoader: universal utility for programming FPGA
-          </a>
-              <div class="version">
-                latest
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="troubleshooting">
+<span id="id1"></span><h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h1>
+<section id="i-installed-openfpgaloader-but-it-says-command-not-found-when-i-try-to-launch-it">
+<h2>I installed openFPGALoader but it says <cite>command not found</cite> when I try to launch it<a class="headerlink" href="#i-installed-openfpgaloader-but-it-says-command-not-found-when-i-try-to-launch-it" title="Link to this heading">¶</a></h2>
+<p>The correct spelling of the program is <em>openFPGALoader</em> with FPGA and the “L” of “Loader” in uppercase.
+Ensure the spelling of the program is correct.</p>
+</section>
+<section id="gowin-device-could-not-communicate-since-last-bitstream-flashed-issue-206">
+<h2>Gowin device could not communicate since last bitstream flashed. (issue <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/issues/206">#206</a>)<a class="headerlink" href="#gowin-device-could-not-communicate-since-last-bitstream-flashed-issue-206" title="Link to this heading">¶</a></h2>
+<p>Gowin’s FPGA may fails to be detected if <strong>JTAGSEL_N</strong> (pin 08 for <em>GW1N-4K</em>) is used as a GPIO.
+To recover you have to pull down this pin (before power up) to recover JTAG interface (<em>UG292 - JTAGSELL_N section</em>).</p>
+</section>
+<section id="jtag-init-failed">
+<h2>JTAG init failed<a class="headerlink" href="#jtag-init-failed" title="Link to this heading">¶</a></h2>
+<p>Avoid using USB hubs and connect it directly to your PC USB port.</p>
+</section>
+<section id="tang-primer-20k-program-slow-and-stucked-issue-250">
+<h2>Tang Primer 20k program slow and stucked (issue <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/issues/250">#250</a>)<a class="headerlink" href="#tang-primer-20k-program-slow-and-stucked-issue-250" title="Link to this heading">¶</a></h2>
+<p>Check your openFPGALoader version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-V
+</pre></div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<p>If it is older than release then v0.9.0, install the most recent version (from commit <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/commit/fe259fb78d185b3113661d04cd7efa9ae0232425">f5b89bff68a5e2147404a895c075773884077438</a> or later).</p>
+</section>
+<section id="cannot-flash-tang-nano-20k-issue-251">
+<h2>Cannot flash Tang Nano 20k (issue <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/issues/511">#251</a>)<a class="headerlink" href="#cannot-flash-tang-nano-20k-issue-251" title="Link to this heading">¶</a></h2>
+<p>Some firmware version cannot be flashed on Linux-based systems. Version 2024122312 is such an example. It seems this version was not published on the <a class="reference external" href="https://api.dl.sipeed.com/TANG/Debugger/onboard/BL616/">SiPeed website</a>, however some boards sold have this firmware.</p>
+<p>The cause of the problem is the debugger on the Tang Nano, specifically the firmware of this debugger. This firmware can be easily updated by following <a class="reference external" href="https://wiki.sipeed.com/hardware/en/tang/common-doc/update_debugger.html">these</a> steps.</p>
+</section>
+<section id="cannot-flash-tang-nano-9k-issue-251">
+<h2>Cannot flash Tang Nano 9k (issue <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/issues/251">#251</a>)<a class="headerlink" href="#cannot-flash-tang-nano-9k-issue-251" title="Link to this heading">¶</a></h2>
+<p>This is a device issue, erase its Embedded Flash using Official GoWin Programmer (preferentially in Windows) and SRAM too, then you can use openFPGALoader again.</p>
+</section>
+<section id="unable-to-open-ftdi-device-4-usb-open-failed-issue-245">
+<h2>Unable to open FTDI device: -4 (usb_open() failed) (issue <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/issues/245">#245</a>)<a class="headerlink" href="#unable-to-open-ftdi-device-4-usb-open-failed-issue-245" title="Link to this heading">¶</a></h2>
+<p>Edit your <cite>/etc/udev/rules.d/99-ftdi.rules</cite> file exchanging your programming device permissions.</p>
+<p>For more information, check the udev section from <a class="reference external" href="install.rst">this guide</a></p>
+</section>
+<section id="converter-cannot-be-opened-fails-to-open-device-issue-626">
+<h2>Converter cannot be opened: <cite>fails to open device</cite> (issue <a class="reference external" href="https://github.com/trabucayre/openFPGALoader/issues/626">#626</a>)<a class="headerlink" href="#converter-cannot-be-opened-fails-to-open-device-issue-626" title="Link to this heading">¶</a></h2>
+<p>This is usually a permissions issue on Linux.</p>
+<p>Check your current groups:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>id<span class="w"> </span><span class="nv">$USER</span>
+</pre></div>
+</div>
+<p>Verify device node access rights:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>/dev/ttyUSB*<span class="w"> </span>/dev/ttyACM*
+</pre></div>
+</div>
+<p>Then verify udev rules are installed correctly (<code class="docutils literal notranslate"><span class="pre">70-openfpgaloader.rules</span></code> or
+<code class="docutils literal notranslate"><span class="pre">99-openfpgaloader.rules</span></code>), and that your user is in the expected group
+(<code class="docutils literal notranslate"><span class="pre">dialout</span></code> or <code class="docutils literal notranslate"><span class="pre">plugdev</span></code>).</p>
+<p>After changing groups or rules, reload udev rules, then unplug/replug the
+converter and log out/login again.</p>
+<p>Reference: <a class="reference external" href="https://trabucayre.github.io/openFPGALoader/guide/install.html#udev-rules">install guide (udev rules section)</a>.</p>
+</section>
+<section id="unable-to-flash-device-on-openbsd-jtag-init-failed-with-dirtyjtag-fails-to-open-device">
+<h2>Unable to flash device on OpenBSD: <cite>JTAG init failed with: DirtyJtag: fails to open device</cite><a class="headerlink" href="#unable-to-flash-device-on-openbsd-jtag-init-failed-with-dirtyjtag-fails-to-open-device" title="Link to this heading">¶</a></h2>
+<p>Certain evaluation boards may show the following error message when running openFPGAloader on OpenBSD:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fail<span class="w"> </span>to<span class="w"> </span><span class="nb">read</span><span class="w"> </span>data<span class="w"> </span>usb<span class="w"> </span>bulk<span class="w"> </span><span class="nb">read</span><span class="w"> </span>failed
+JTAG<span class="w"> </span>init<span class="w"> </span>failed<span class="w"> </span>with:<span class="w"> </span>low<span class="w"> </span>level<span class="w"> </span>FTDI<span class="w"> </span>init<span class="w"> </span>failed
+</pre></div>
+</div>
+<p>This issue is most likely caused by the uftdi(4) module, which has attached itself to the device, whereas openFPGALoader requires it to be accessible as a ugen(4) device.</p>
+<p>Unfortunately, due to the security concept of OpenBSD, it is not possible to detach it without modifying the kernel and rebooting the system. However, there are two ways to resolve the issue: Either by patching and recompiling the kernel; or by deactivating the uftdi(4) module.</p>
+<p>After COMMENTING OUT the problematic devices in <cite>/usr/src/sys/dev/usb/uftdi.c</cite>, the code would look like this:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="n">USB_VENDOR_FTDI</span><span class="p">,</span><span class="w"> </span><span class="n">USB_PRODUCT_FTDI_SEMC_DSS20</span><span class="w"> </span><span class="p">},</span>
+<span class="c1">//{ USB_VENDOR_FTDI, USB_PRODUCT_FTDI_SERIAL_2232C },</span>
+<span class="p">{</span><span class="w"> </span><span class="n">USB_VENDOR_FTDI</span><span class="p">,</span><span class="w"> </span><span class="n">USB_PRODUCT_FTDI_SERIAL_2232L</span><span class="w"> </span><span class="p">},</span>
+</pre></div>
+</div>
+<p>With this manual patch applied, the steps in <cite>https://www.openbsd.org/faq/faq5.html &lt;https://www.openbsd.org/faq/faq5.html#Custom&gt;</cite> can be used to recompile the kernel.</p>
+<p>Without recompilation, DEACTIVATING uftdi(4) can be achieved using the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># doas config -e -f -o /bsd.nouftdi /bsd</span>
+OpenBSD<span class="w"> </span><span class="m">7</span>.8<span class="w"> </span><span class="o">(</span>GENERIC<span class="o">)</span><span class="w"> </span><span class="c1">#54: Sun Oct 12 12:45:58 MDT 2025</span>
+<span class="w">    </span>deraadt@amd64.openbsd.org:/usr/src/sys/arch/amd64/compile/GENERIC
+Enter<span class="w"> </span><span class="s1">'help'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>information
+ukc&gt;<span class="w"> </span>disable<span class="w"> </span>uftdi*
+<span class="m">356</span><span class="w"> </span>uftdi*<span class="w"> </span>disabled
+ukc&gt;<span class="w"> </span>disable<span class="w"> </span>uftdi0
+ukc&gt;<span class="w"> </span>disable<span class="w"> </span>uftdi1
+ukc&gt;<span class="w"> </span>quit
+Saving<span class="w"> </span>modified<span class="w"> </span>kernel.
+<span class="c1"># reboot</span>
+</pre></div>
+</div>
+<p>At the boot prompt, typing in</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>boot&gt;<span class="w"> </span>boot<span class="w"> </span>/bsd.nouftdi
+</pre></div>
+</div>
+<p>will boot the new kernel with the disabled module.</p>
+<p>Either way, openFPGALoader will then be able to access the development board as a generic USB device via ugen(4).</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">openFPGALoader: universal utility for programming FPGA</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="first-steps.html">First steps with openFPGALoader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing openFPGALoader</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#i-installed-openfpgaloader-but-it-says-command-not-found-when-i-try-to-launch-it">I installed openFPGALoader but it says <cite>command not found</cite> when I try to launch it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gowin-device-could-not-communicate-since-last-bitstream-flashed-issue-206">Gowin device could not communicate since last bitstream flashed. (issue #206)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jtag-init-failed">JTAG init failed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tang-primer-20k-program-slow-and-stucked-issue-250">Tang Primer 20k program slow and stucked (issue #250)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cannot-flash-tang-nano-20k-issue-251">Cannot flash Tang Nano 20k (issue #251)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cannot-flash-tang-nano-9k-issue-251">Cannot flash Tang Nano 9k (issue #251)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unable-to-open-ftdi-device-4-usb-open-failed-issue-245">Unable to open FTDI device: -4 (usb_open() failed) (issue #245)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#converter-cannot-be-opened-fails-to-open-device-issue-626">Converter cannot be opened: <cite>fails to open device</cite> (issue #626)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unable-to-flash-device-on-openbsd-jtag-init-failed-with-dirtyjtag-fails-to-open-device">Unable to flash device on OpenBSD: <cite>JTAG init failed with: DirtyJtag: fails to open device</cite></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced usage of openFPGALoader</a></li>
@@ -71,69 +193,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
 </ul>
 
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install.html" title="previous chapter">Installing openFPGALoader</a></li>
+      <li>Next: <a href="advanced.html" title="next chapter">Advanced usage of openFPGALoader</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">openFPGALoader: universal utility for programming FPGA</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-        
-          
-            <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Troubleshooting</li>
-      <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/trabucayre/openFPGALoader/blob/master/doc/guide/troubleshooting.rst" class="fa fa-github"> Edit on GitHub</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="troubleshooting">
-<span id="id1"></span><h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
-<section id="i-installed-openfpgaloader-but-it-says-command-not-found-when-i-try-to-launch-it">
-<h2>I installed openFPGALoader but it says <cite>command not found</cite> when I try to launch it<a class="headerlink" href="#i-installed-openfpgaloader-but-it-says-command-not-found-when-i-try-to-launch-it" title="Permalink to this headline">¶</a></h2>
-<p>The correct spelling of the program is <em>openFPGALoader</em> with FPGA and the “L” of “Loader” in uppercase.
-Ensure the spelling of the program is correct.</p>
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="install.html" class="btn btn-neutral float-left" title="Installing openFPGALoader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced usage of openFPGALoader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2019-2022, Gwenhael Goavec-Merou and contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.2.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/guide/troubleshooting.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-  <hr/>
+    
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2019-2022, Gwenhael Goavec-Merou and contributors.</p>
-  </div>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/buildthedocs/sphinx.theme">theme</a>
-    provided by <a href="https://buildthedocs.github.io">Build the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

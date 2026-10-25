@@ -1,46 +1,152 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cologne Chip notes &mdash; openFPGALoader: universal utility for programming FPGA latest documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Cologne Chip notes &#8212; openFPGALoader: universal utility for programming FPGA latest documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Efinix notes" href="efinix.html" />
-    <link rel="prev" title="Anlogic notes" href="anlogic.html" /> 
-</head>
+    <link rel="prev" title="Anlogic notes" href="anlogic.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> openFPGALoader: universal utility for programming FPGA
-          </a>
-              <div class="version">
-                latest
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="cologne-chip-notes">
+<span id="colognechip"></span><h1>Cologne Chip notes<a class="headerlink" href="#cologne-chip-notes" title="Link to this heading">¶</a></h1>
+<section id="supported-boards-cables">
+<h2>Supported Boards/Cables<a class="headerlink" href="#supported-boards-cables" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>GateMate Evaluation Board using board parameters <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">gatemate_evb_jtag</span></code> or <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">gatemate_evb_spi</span></code></p></li>
+<li><p>GateMate Programmer using cable parameter <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">gatemate_pgm</span></code></p></li>
+</ul>
+</section>
+<section id="programming-modes">
+<h2>Programming Modes<a class="headerlink" href="#programming-modes" title="Link to this heading">¶</a></h2>
+<p>Supported configuration files are bitfiles <code class="docutils literal notranslate"><span class="pre">*.bit</span></code> and it’s ASCII equivalents <code class="docutils literal notranslate"><span class="pre">*.cfg</span></code>.</p>
+<section id="jtag-configuration">
+<h3>JTAG Configuration<a class="headerlink" href="#jtag-configuration" title="Link to this heading">¶</a></h3>
+<p>Performs an active hardware reset and writes the configuration into the FPGA latches via JTAG. The configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> must be set to 0xC (JTAG).</p>
+<ol class="arabic simple">
+<li><p>Program using Evaluation Board:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_evb_jtag<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ol class="arabic simple" start="2">
+<li><p>Program using Programmer Cable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-c<span class="w"> </span>gatemate_pgm<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+</section>
+<section id="spi-configuration">
+<h3>SPI Configuration<a class="headerlink" href="#spi-configuration" title="Link to this heading">¶</a></h3>
+<p>Performs an active hardware reset and writes the configuration into the FPGA latches via SPI. The configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> must be set to 0x4 (SPI passive).</p>
+<ol class="arabic simple">
+<li><p>Program using Evaluation Board:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_evb_spi<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Program using Programmer Cable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_pgm_spi<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+</section>
+<section id="jtag-flash-access">
+<h3>JTAG Flash Access<a class="headerlink" href="#jtag-flash-access" title="Link to this heading">¶</a></h3>
+<p>It is possible to access external flashes via the internal JTAG-SPI-bypass. The configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> must be set to 0xC (JTAG). Note that the FPGA will not start automatically.</p>
+<ol class="arabic simple">
+<li><p>Write to flash using Evaluation Board:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_evb_jtag<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Write to flash using Programmer Cable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-c<span class="w"> </span>gatemate_pgm<span class="w"> </span>-f<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+<p>The <cite>offset</cite> parameter can be used to store data at any point in the flash, e.g.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_evb_jtag<span class="w"> </span>-o<span class="w"> </span>&lt;offset&gt;<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+</section>
+<section id="spi-flash-access">
+<h3>SPI Flash Access<a class="headerlink" href="#spi-flash-access" title="Link to this heading">¶</a></h3>
+<p>If the programming device and FPGA share the same SPI signals, it is possible to hold the FPGA in reset and write data to the flash. The configuration mode can be set as desired. If the FPGA should start from the external memory after reset, the configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> set to 0x0 (SPI active).</p>
+<ol class="arabic simple">
+<li><p>Write to flash using Evaluation Board:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_evb_spi<span class="w"> </span>-f<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Write to flash using Programmer Cable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_pgm_spi<span class="w"> </span>-f<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+<p>The <cite>offset</cite> parameter can be used to store data at any point in the flash, e.g.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader<span class="w"> </span>-b<span class="w"> </span>gatemate_evb_spi<span class="w"> </span>-o<span class="w"> </span>&lt;offset&gt;<span class="w"> </span>&lt;bitfile&gt;.cfg.bit
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">openFPGALoader: universal utility for programming FPGA</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../guide/first-steps.html">First steps with openFPGALoader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guide/install.html">Installing openFPGALoader</a></li>
@@ -78,147 +184,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../todo.html">To Do</a></li>
 </ul>
 
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="anlogic.html" title="previous chapter">Anlogic notes</a></li>
+      <li>Next: <a href="efinix.html" title="next chapter">Efinix notes</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">openFPGALoader: universal utility for programming FPGA</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-        
-          
-            <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Cologne Chip notes</li>
-      <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/trabucayre/openFPGALoader/blob/master/doc/vendors/colognechip.rst" class="fa fa-github"> Edit on GitHub</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="cologne-chip-notes">
-<span id="colognechip"></span><h1>Cologne Chip notes<a class="headerlink" href="#cologne-chip-notes" title="Permalink to this headline">¶</a></h1>
-<section id="supported-boards-cables">
-<h2>Supported Boards/Cables<a class="headerlink" href="#supported-boards-cables" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>GateMate Evaluation Board using board parameters <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">gatemate_evb_jtag</span></code> or <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">gatemate_evb_spi</span></code></p></li>
-<li><p>GateMate Programmer using cable parameter <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">gatemate_pgm</span></code></p></li>
-</ul>
-</section>
-<section id="programming-modes">
-<h2>Programming Modes<a class="headerlink" href="#programming-modes" title="Permalink to this headline">¶</a></h2>
-<p>Supported configuration files are bitfiles <code class="docutils literal notranslate"><span class="pre">*.bit</span></code> and it’s ASCII equivalents <code class="docutils literal notranslate"><span class="pre">*.cfg</span></code>.</p>
-<section id="jtag-configuration">
-<h3>JTAG Configuration<a class="headerlink" href="#jtag-configuration" title="Permalink to this headline">¶</a></h3>
-<p>Performs an active hardware reset and writes the configuration into the FPGA latches via JTAG. The configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> must be set to 0xF0 (JTAG).</p>
-<ol class="arabic simple">
-<li><p>Program using Evaluation Board:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_evb_jtag &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Program using Programmer Cable:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -c gatemate_pgm &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-</section>
-<section id="spi-configuration">
-<h3>SPI Configuration<a class="headerlink" href="#spi-configuration" title="Permalink to this headline">¶</a></h3>
-<p>Performs an active hardware reset and writes the configuration into the FPGA latches via SPI. The configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> must be set to 0x40 (SPI passive).</p>
-<ol class="arabic simple">
-<li><p>Program using Evaluation Board:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_evb_spi &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Program using Programmer Cable:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_pgm_spi &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-</section>
-<section id="jtag-flash-access">
-<h3>JTAG Flash Access<a class="headerlink" href="#jtag-flash-access" title="Permalink to this headline">¶</a></h3>
-<p>It is possible to access external flashes via the internal JTAG-SPI-bypass. The configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> must be set to 0xF0 (JTAG). Note that the FPGA will not start automatically.</p>
-<ol class="arabic simple">
-<li><p>Write to flash using Evaluation Board:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_evb_jtag &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Write to flash using Programmer Cable:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -c gatemate_pgm -f &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-<p>The <cite>offset</cite> parameter can be used to store data at any point in the flash, e.g.:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_evb_jtag -o &lt;offset&gt; &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-</section>
-<section id="spi-flash-access">
-<h3>SPI Flash Access<a class="headerlink" href="#spi-flash-access" title="Permalink to this headline">¶</a></h3>
-<p>If the programming device and FPGA share the same SPI signals, it is possible to hold the FPGA in reset and write data to the flash. The configuration mode can be set as desired. If the FPGA should start from the external memory after reset, the configuration mode pins <code class="docutils literal notranslate"><span class="pre">CFG_MD[3:0]</span></code> set to 0x00 (SPI active).</p>
-<ol class="arabic simple">
-<li><p>Write to flash using Evaluation Board:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_evb_spi -f &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Write to flash using Programmer Cable:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_pgm_spi -f &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-<p>The <cite>offset</cite> parameter can be used to store data at any point in the flash, e.g.:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openFPGALoader -b gatemate_evb_spi -o &lt;offset&gt; &lt;bitfile&gt;.cfg.bit
-</pre></div>
-</div>
-</section>
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="anlogic.html" class="btn btn-neutral float-left" title="Anlogic notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="efinix.html" class="btn btn-neutral float-right" title="Efinix notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2019-2022, Gwenhael Goavec-Merou and contributors.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.2.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/vendors/colognechip.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-  <hr/>
+    
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2019-2022, Gwenhael Goavec-Merou and contributors.</p>
-  </div>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/buildthedocs/sphinx.theme">theme</a>
-    provided by <a href="https://buildthedocs.github.io">Build the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>
