@@ -280,6 +280,7 @@ static std::map <std::string, target_board_t> board_list = {
 	JTAG_BOARD("usrpx300",        "xc7k325tffg900",       "digilent",     SPI_FLASH, 0, 0, CABLE_MHZ(15)),
 	JTAG_BOARD("usrpx310",        "xc7k410tffg900",       "digilent",     SPI_FLASH, 0, 0, CABLE_MHZ(15)),
 	JTAG_BOARD("vec_v6",          "xc6vlx130tff784",      "ft2232",       SPI_FLASH, 0, 0, CABLE_DEFAULT),
+	JTAG_BOARD("vc707",           "xc7vx485tffg1761",     "digilent",     BPI_FLASH, 0, 0, CABLE_DEFAULT),
 	JTAG_BOARD("vc709", 		  "xc7vx690tffg1761",     "digilent",     SPI_FLASH, 0, 0, CABLE_MHZ(15)),
 	JTAG_BOARD("vcu108",          "xcvu095-ffva2104",     "jtag-smt2-nc", SPI_FLASH, 0, 0, CABLE_DEFAULT),
 	JTAG_BOARD("vcu118",          "xcvu9p-flga2104",      "jtag-smt2-nc", SPI_FLASH, 0, 0, CABLE_DEFAULT),
